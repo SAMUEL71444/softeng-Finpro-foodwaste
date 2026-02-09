@@ -252,7 +252,7 @@ export default function Home() {
         <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 whitespace-nowrap font-bold text-sm">Lapor / Bantuan</span>
       </a>
 
-      <footer className="bg-white border-t mt-10 py-8 text-center"><p className="text-gray-400 text-sm">© 2024 ResQ-Food Indonesia.<br/>Created by Samuel (Computer Science BINUS) 🎓</p></footer>
+      <footer className="bg-white border-t mt-10 py-8 text-center"><p className="text-gray-400 text-sm">© 2026 ResQ-Food Indonesia.<br/>Created by Samuel (Computer Science BINUS) 🎓</p></footer>
     </main>
   )
 }
