@@ -75,20 +75,30 @@ export default function AdminPage() {
   }
 
   const fetchItems = async (userId) => {
-    // 1. Ambil Barang
-    const { data } = await supabase.from('items').select('*').eq('user_id', userId).order('created_at', { ascending: false })
+    // 1. Ambil tanggal hari ini (Format: YYYY-MM-DD)
+    const today = new Date().toISOString().split('T')[0]
+
+    // 2. Minta data ke Supabase DENGAN FILTER OTOMATIS
+    const { data } = await supabase
+      .from('items')
+      .select('*')
+      
+      .eq('user_id', userId)
+      .gt('stock', 0)               // 🔥 Filter 1: Hanya ambil yang stoknya LEBIH BESAR dari 0
+      .gte('expiry_date', today)    // 🔥 Filter 2: Hanya ambil yang tanggal expired-nya HARI INI atau NANTI
+      .order('created_at', { ascending: false })
     
-    // 2. Ambil Saldo Profil (WALLET)
+    // 3. Ambil Saldo Profil (WALLET)
     const { data: profileData } = await supabase.from('profiles').select('balance').eq('id', userId).single()
     const currentBalance = profileData?.balance || 0
 
     if (data) {
       setItems(data)
-      // Update Stats termasuk Balance
+      // Update Stats termasuk Balance (Angka otomatis menyesuaikan barang yang aktif saja)
       const totalMenu = data.length
       const totalStok = data.reduce((acc, item) => acc + item.stock, 0)
       const potensiDuit = data.reduce((acc, item) => acc + ((item.price * 0.5) * item.stock), 0)
-      setStats({ totalMenu, totalStok, potensiDuit, balance: currentBalance }) // <-- Set Balance
+      setStats({ totalMenu, totalStok, potensiDuit, balance: currentBalance }) 
       
       olahDataGrafik(data)
     }
