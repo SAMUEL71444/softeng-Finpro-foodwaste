@@ -25,19 +25,22 @@ export default function LoginPage() {
       return
     }
 
-    // 2. CEK PERAN: Apakah dia Penjual atau Pembeli?
+    // 2. CEK PERAN: Ambil data role dan store_name dari database
     const { data: profile } = await supabase
       .from('profiles')
-      .select('store_name') // Cek apakah punya toko
+      .select('store_name, role') // 🔥 RADAR AKTIF: Sekarang ngambil kolom 'role' juga!
       .eq('id', user.id)
       .single()
 
     // 3. LOGIKA REDIRECT PINTAR 🧠
-    if (profile && profile.store_name) {
-      // Punya nama toko = PENJUAL
+    if (profile?.role === 'superadmin') {
+      // 👑 JALUR VIP: Bos Besar langsung ke Markas!
+      router.push('/superadmin')
+    } else if (profile?.store_name || profile?.role === 'seller') {
+      // 🏪 JALUR PENJUAL: Punya toko, masuk ke Admin Panel
       router.push('/admin')
     } else {
-      // Gak punya nama toko = PEMBELI
+      // 🛒 JALUR UMUM: Pembeli biasa, masuk ke Beranda
       router.push('/') 
     }
     
